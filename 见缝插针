@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour {
+
+    private Transform spawnPoint;
+    private PinMove currentPin;
+    private bool isGameOver = false;
+    private int score;
+
+    public Text scoreText;
+
+    public GameObject pinPrefab;
+
+	void Start () {
+        spawnPoint = GameObject.Find("SpawnPoint").transform;
+        SpawnPin();
+	}
+	
+	void Update () {
+        if (isGameOver) return;
+        if (Input.GetMouseButtonDown(0))
+        {
+            score++;
+            scoreText.text = score.ToString();
+            currentPin.StartFly();
+            SpawnPin();
+        }
+	}
+
+    private void SpawnPin()
+    {
+        currentPin = GameObject.Instantiate(pinPrefab, spawnPoint.position , pinPrefab.transform.rotation).GetComponent<PinMove>();
+    }
+
+    public void GameOver()
+    {
+        if (isGameOver) return;
+        GameObject.Find("Circle").GetComponent<RotateSelf>().enabled = false;
+        isGameOver = true;
+        GameObject.Find("Main Camera").GetComponent<Animator>().SetBool("GameOver", true);
+    }
+
+}
